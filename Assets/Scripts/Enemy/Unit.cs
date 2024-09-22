@@ -6,7 +6,9 @@ public class Unit : MonoBehaviour
 {
     public ElementType elementType;
     public string unitName;
-    public int level;
+    public int goldCost;
+    public int level = 1;
+    public bool isOnBoard = false;
 
     // Unit stats
     public float health;
@@ -60,5 +62,17 @@ public class Unit : MonoBehaviour
     private void Die()
     {
         // Handle unit death
+    }
+
+    public void LevelUp()
+    {
+        level++;
+        goldCost += 10;  // Example increase, adjust as needed
+    }
+
+    public void Sell()
+    {
+        // Give the player gold based on the unit's value
+        // Example: Player.gold += goldCost;
     }
 }
