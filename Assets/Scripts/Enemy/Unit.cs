@@ -4,6 +4,7 @@ public enum ElementType { Fire, Water, Earth, Air, Grass, Lightning }
 
 public class Unit : MonoBehaviour
 {
+    public Sprite unitSprite; // The image or sprite representing the unit
     public ElementType elementType;
     public string unitName;
     public int goldCost;

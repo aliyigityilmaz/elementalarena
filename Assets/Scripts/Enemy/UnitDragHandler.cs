@@ -5,23 +5,17 @@ public class UnitDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 {
     private Vector3 startPosition;
     private bool isDragging = false;
-    public bool isPreparationPhase = true;  // This should be updated based on game state
-    private Unit unit;
+    public bool isPreparationPhase = true;  // Bu oyun aþamasýna göre deðiþecek
     private Transform parentToReturnTo = null;
-
-    void Start()
-    {
-        unit = GetComponent<Unit>();
-    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (isPreparationPhase || unit.isOnBoard == false)
+        if (isPreparationPhase)
         {
             isDragging = true;
             startPosition = transform.position;
             parentToReturnTo = transform.parent;
-            transform.SetParent(null);  // Temporarily detach from grid or inventory
+            transform.SetParent(null);  // Geçici olarak parent'ý kaldýrýyoruz
         }
     }
 
@@ -40,24 +34,22 @@ public class UnitDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         if (isPreparationPhase)
         {
-            // Place unit on the board if valid
             Transform droppedTile = GetDroppedTileUnderUnit();
             if (droppedTile != null)
             {
-                transform.position = droppedTile.position;  // Snap to tile position
-                transform.SetParent(droppedTile);  // Set the unit as a child of the tile
-                unit.isOnBoard = true;
+                transform.position = droppedTile.position;
+                transform.SetParent(droppedTile);
             }
             else
             {
-                // If not dropped on a valid tile, return to original position
+                // Geçersiz bir yere býrakýldýysa baþlangýç pozisyonuna dön
                 transform.position = startPosition;
                 transform.SetParent(parentToReturnTo);
             }
         }
         else
         {
-            // Return to inventory if battle phase
+            // Savaþ aþamasýnda unit envantere geri döner
             transform.position = startPosition;
             transform.SetParent(parentToReturnTo);
         }
@@ -66,7 +58,6 @@ public class UnitDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     Transform GetDroppedTileUnderUnit()
     {
-        // Raycast logic to detect if the unit is over a valid tile on the grid
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
